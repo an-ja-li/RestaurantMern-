@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import CustomNavbar from "./components/Navbar";
 import Homepage from "./pages/Homepage";
 import StaffPage from "./pages/staff/StaffPage";
-import Food from "./pages/Food"; // Food page component
+import Food from "./pages/Food/Food"; // Food page component
 
 
 
