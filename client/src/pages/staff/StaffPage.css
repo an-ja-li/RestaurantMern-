@@ -1,0 +1,45 @@
+.toggle-switch {
+    display: flex;
+    border: 2px solid  #e87e57;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 150px;
+  }
+  
+  .toggle-label {
+    flex: 1;
+    text-align: center;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+    background-color: white;
+    color: black;
+  }
+  
+  .toggle-label.active {
+    background-color: #e87e57;
+    color: white;
+  }  
+  .button {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .button.danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .button.warning {
+    background-color: #ffc107;
+    color: black;
+  }
+  
+  .button.secondary {
+    background-color: #6c757d;
+    color: white;
+  }
+  

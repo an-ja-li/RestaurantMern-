@@ -1,0 +1,11 @@
+.app {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
+  
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
