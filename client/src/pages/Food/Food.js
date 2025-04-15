@@ -2,6 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import FoodCard from '../../components/food/FoodCard';
 import FoodForm from '../../components/food/FoodForm';
+import Button from '../../components/button'; // Adjust the path if needed
+
 import { Search, PlusCircle, UtensilsCrossed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './Food.css';
@@ -95,7 +97,7 @@ const App = () => {
               />
             </div>
 
-            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+            <select value={categoryFilter} className="DROPDOWN" onChange={(e) => setCategoryFilter(e.target.value)}>
               <option value="All">All</option>
               <option value="Starter">Starter</option>
               <option value="Dessert">Dessert</option>
@@ -103,23 +105,22 @@ const App = () => {
               <option value="Beverage">Beverage</option>
             </select>
 
-            <select value={vegFilter} onChange={(e) => setVegFilter(e.target.value)}>
+            <select value={vegFilter} className="DROPDOWN"onChange={(e) => setVegFilter(e.target.value)}>
               <option value="All">All</option>
               <option value="Veg">Veg</option>
               <option value="Non-Veg">Non-Veg</option>
             </select>
 
-            <button
-              className="add-button"
-              onClick={() => {
-                setEditingFood(null);
-                setShowForm(true);
-              }}
-            >
-              <PlusCircle size={18} />
-              
-              <span>Add Food</span>
-            </button>
+            <Button
+            onClick={() => {
+              setEditingFood(null);
+              setShowForm(true);
+            }}
+            className="add-button"
+          >
+            Add Food
+          </Button>
+
           </div>
         </div>
 

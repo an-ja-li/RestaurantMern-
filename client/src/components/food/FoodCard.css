@@ -1,20 +1,20 @@
 .food-card {
-    width: 13rem;
-    padding: 1rem;
-    background: white;
-    border-radius: 1rem;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;  /* ✅ center horizontally */
-    text-align: center;   /* ✅ center text */
-  }
-  
-  
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 15rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
   .food-image {
     width: 100%;
     height: 10rem;
-    object-fit: cover;
+    object-fit:contain;
     border-radius: 0.75rem;
     margin-bottom: 0.5rem;
     border: none;
@@ -22,13 +22,14 @@
   }
   
   .food-name {
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: 600;
     color: black;
   }
+
   
   .food-price {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
     color: #fb5607;
   }
@@ -41,9 +42,9 @@
   .food-actions {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
+     gap: 0.5rem;
+    margin-top: 0.5rem; 
+  } 
   
   .food-btn {
     border: 1px solid #fb5607;
@@ -56,6 +57,8 @@
   }
   
   .food-btn:hover {
-    background-color: #fff4ed;
+    background-color: #e87e57;
+    color: white;
+    transform: scale(1.1);
   }
   
