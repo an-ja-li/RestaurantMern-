@@ -5,6 +5,7 @@ import { Search, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faBox } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import '../Food/Food.css';
 import'../Order/Order.css';
 
@@ -91,8 +92,16 @@ const App = () => {
 
   const handleCheckout = () => {
     showToast(`Your order of ₹${getTotal()} has been placed successfully!`);
+    
+    const orderData = {
+      cartItems: cart,
+      totalAmount: getTotal(),
+    };
+
     setCart([]);
+    navigate('/billing', { state: { order: orderData } });  
   };
+  const navigate = useNavigate();
 
   const filteredFoods = useMemo(() => {
     let filtered = [...foods];
