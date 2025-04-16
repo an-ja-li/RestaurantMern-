@@ -5,28 +5,34 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
+// Import DB config and routes
 const connectDB = require("./config/db");
 const staffRoutes = require("./routes/staffRoutes");
 const foodRoutes = require("./routes/foodRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect DB
+// Connect to MongoDB
 connectDB();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-// Serve images statically
-app.use('/uploads', express.static('uploads'));
 
+// Serve static files (uploads)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
-
+// API Routes
 app.use("/api/staff", staffRoutes);
-app.use('/foods', foodRoutes);
+app.use("/api/foods", foodRoutes);        // changed to "/api/foods" for consistency
+app.use("/api/auth", authRoutes);
 
+// Root route (optional)
+app.get("/", (req, res) => {
+  res.send("🍽️ Welcome to the Restaurant API");
+});
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -34,7 +40,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
-// Start server
+// Start the server
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });

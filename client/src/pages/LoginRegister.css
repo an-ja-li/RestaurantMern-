@@ -114,3 +114,9 @@
   text-decoration: underline;
   cursor: pointer;
 }
+.form-message {
+  margin-top: 10px;
+  font-weight: bold;
+  color: green;
+  text-align: center;
+}
