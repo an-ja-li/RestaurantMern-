@@ -2,21 +2,25 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../pages/Food/Food.css';
 
-
 const FoodForm = ({ onSuccess, editingFood, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     category: 'Starter',
     type: 'Veg',
-    imageUrl: '',
+    image: null,
+    imageUrl: ''
   });
 
   useEffect(() => {
     if (editingFood) {
       setFormData({
-        ...editingFood,
-        image: null
+        name: editingFood.name || '',
+        price: editingFood.price || '',
+        category: editingFood.category || 'Starter',
+        type: editingFood.type || 'Veg',
+        image: null,
+        imageUrl: editingFood.imageUrl || ''
       });
     }
   }, [editingFood]);
@@ -37,16 +41,18 @@ const FoodForm = ({ onSuccess, editingFood, onClose }) => {
     data.append('price', formData.price);
     data.append('category', formData.category);
     data.append('type', formData.type);
-    if (formData.image) data.append('image', formData.image);
+    if (formData.image) {
+      data.append('image', formData.image);
+    }
 
     try {
       if (editingFood && editingFood._id) {
-        await axios.put(`http://localhost:5000/foods/${editingFood._id}`, data);
+        await axios.put(`http://localhost:5000/api/foods/${editingFood._id}`, data);
       } else {
-        await axios.post('http://localhost:5000/foods', data);
+        await axios.post('http://localhost:5000/api/foods', data);
       }
 
-      setFormData({ name: '', price: '', category: 'Starter', type: 'Veg', image: null });
+      setFormData({ name: '', price: '', category: 'Starter', type: 'Veg', image: null, imageUrl: '' });
       onSuccess();
     } catch (err) {
       console.error('Save failed:', err);
@@ -58,34 +64,40 @@ const FoodForm = ({ onSuccess, editingFood, onClose }) => {
       <div className="modal-box">
         <button className="close-btn" onClick={onClose}>×</button>
         <form onSubmit={handleSubmit} encType="multipart/form-data" className="modal-form">
-        <h2>{editingFood ? 'Edit Menu Item' : 'Add New Menu Item'}</h2>
+          <h2>{editingFood ? 'Edit Menu Item' : 'Add New Menu Item'}</h2>
 
-  <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
+          <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
 
-  <div className="row">
-    <select name="category" value={formData.category} onChange={handleChange}>
-      <option value="Starter">Starter</option>
-      <option value="Main Course">Main Course</option>
-      <option value="Dessert">Dessert</option>
-      <option value="Drinks">Drinks</option>
-      <option value="Beverage">Beverage</option>
-    </select>
-    <input type="number" name="price" placeholder="Price (₹)" value={formData.price} onChange={handleChange} required />
-  </div>
+          <div className="row">
+            <select name="category" value={formData.category} onChange={handleChange}>
+              <option value="Starter">Starter</option>
+              <option value="Main Course">Main Course</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Drinks">Drinks</option>
+              <option value="Beverage">Beverage</option>
+            </select>
+            <input type="number" name="price" placeholder="Price (₹)" value={formData.price} onChange={handleChange} required />
+          </div>
 
-  <select name="type" value={formData.type} onChange={handleChange}>
-    <option value="Veg">Vegetarian</option>
-    <option value="Non-Veg">Non-Vegetarian</option>
-  </select>
+          <select name="type" value={formData.type} onChange={handleChange}>
+            <option value="Veg">Vegetarian</option>
+            <option value="Non-Veg">Non-Vegetarian</option>
+          </select>
 
-  <input type="file" accept="image/*" onChange={handleImageChange} />
+          <input type="file" accept="image/*" onChange={handleImageChange} />
 
-  <div className="row">
-    <button type="button" onClick={onClose}>Cancel</button>
-    <button type="submit">{editingFood ? 'Update' : 'Save'}</button>
-  </div>
-</form>
+          {formData.imageUrl && !formData.image && (
+            <div>
+              <p>Current Image:</p>
+              <img src={formData.imageUrl} alt={formData.name} style={{ maxWidth: '100px' }} />
+            </div>
+          )}
 
+          <div className="row">
+            <button type="button" onClick={onClose}>Cancel</button>
+            <button type="submit">{editingFood ? 'Update' : 'Save'}</button>
+          </div>
+        </form>
       </div>
     </div>
   );

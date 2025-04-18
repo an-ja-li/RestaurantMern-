@@ -1,19 +1,36 @@
+// components/LoginRegister.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import './LoginRegister.css';
 
 const LoginModal = ({ show, onClose }) => {
-  const [formType, setFormType] = useState('login'); // 'login' | 'register' | 'forgot'
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [formType, setFormType] = useState('login');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    securityQuestion: '',
+    securityAnswer: ''
+  });
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [forgotStep, setForgotStep] = useState(1);
+  const [securityQuestion, setSecurityQuestion] = useState('');
+  const [securityAnswer, setSecurityAnswer] = useState('');
+  const [newPassword, setNewPassword] = useState('');
 
   if (!show) return null;
 
   const switchForm = (type) => {
     setFormType(type);
-    setFormData({ name: '', email: '', password: '' });
+    setFormData({ name: '', email: '', password: '', securityQuestion: '', securityAnswer: '' });
+    setSecurityQuestion('');
+    setSecurityAnswer('');
+    setNewPassword('');
+    setForgotStep(1);
     setMessage('');
     setIsError(false);
   };
@@ -22,53 +39,82 @@ const LoginModal = ({ show, onClose }) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    setIsError(false);
+
+    try {
+      if (forgotStep === 1) {
+        const res = await axios.post('http://localhost:5000/api/auth/forgot-password-step1', {
+          email: formData.email.trim(),
+        });
+        setSecurityQuestion(res.data.securityQuestion);
+        setForgotStep(2);
+      } else if (forgotStep === 2) {
+        const res = await axios.post('http://localhost:5000/api/auth/forgot-password-step2', {
+          email: formData.email.trim(),
+          securityQuestion,
+          securityAnswer,
+        });
+        if (res.data.success) setForgotStep(3);
+        setMessage(res.data.message);
+        setIsError(!res.data.success);
+      } else if (forgotStep === 3) {
+        const res = await axios.post('http://localhost:5000/api/auth/reset-password', {
+          email: formData.email.trim(),
+          newPassword,
+        });
+        setMessage(res.data.message);
+        setIsError(false);
+        setTimeout(() => {
+          onClose();
+          switchForm('login');
+        }, 1000);
+      }
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || err.message || 'Something went wrong';
+      setMessage(errorMsg);
+      setIsError(true);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setIsError(false);
-  
+    setLoading(true);
+
     try {
       let res;
-  
       if (formType === 'login') {
         res = await axios.post('http://localhost:5000/api/auth/login', {
           email: formData.email.trim(),
           password: formData.password,
         });
-  
-        console.log("✅ Login Response:", res.data);
-  
       } else if (formType === 'register') {
         res = await axios.post('http://localhost:5000/api/auth/register', {
           name: formData.name,
           email: formData.email.trim(),
           password: formData.password,
+          securityQuestion: formData.securityQuestion,
+          securityAnswer: formData.securityAnswer,
         });
-  
-        console.log("✅ Registration Response:", res.data);
-      } else {
-        setMessage("Reset link sent (mock)");
-        return;
       }
-  
       setMessage(res.data.message);
       setIsError(false);
-  
-      // Optional: close modal after short delay
       setTimeout(() => {
         onClose();
         switchForm('login');
       }, 1000);
-  
     } catch (err) {
-      console.error("❌ Axios Error:", err.response || err.message || err);
-      const errorMsg = err.response?.data?.message || 'Something went wrong';
+      const errorMsg = err.response?.data?.message || err.message || 'Something went wrong';
       setMessage(errorMsg);
       setIsError(true);
+    } finally {
+      setLoading(false);
     }
   };
-  
-    
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -87,36 +133,38 @@ const LoginModal = ({ show, onClose }) => {
         </h2>
 
         <AnimatePresence mode="wait">
-          <motion.form
-            key={formType}
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -100, opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="form-fields"
-            onSubmit={handleSubmit}
-          >
-            {formType === 'register' && (
+          {formType !== 'forgot' ? (
+            <motion.form
+              key={formType}
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -100, opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="form-fields"
+              onSubmit={handleSubmit}
+            >
+              {formType === 'register' && (
+                <>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </>
+              )}
+
               <input
-                type="text"
-                name="name"
-                placeholder="Full Name"
-                value={formData.name}
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
                 onChange={handleChange}
                 required
               />
-            )}
 
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-
-            {formType !== 'forgot' && (
               <input
                 type="password"
                 name="password"
@@ -125,25 +173,132 @@ const LoginModal = ({ show, onClose }) => {
                 onChange={handleChange}
                 required
               />
-            )}
 
-            {formType === 'login' && (
-              <p className="forgot-password">
-                <span onClick={() => switchForm('forgot')}>Forgot Password?</span>
-              </p>
-            )}
+              {formType === 'register' && (
+                <>
+                  <select
+                    name="securityQuestion"
+                    value={formData.securityQuestion}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select a Security Question</option>
+                    <option value="What is your pet's name?">What is your pet's name?</option>
+                    <option value="What is your mother's name?">What is your mother's name?</option>
+                    <option value="What was the name of your first school?">What was the name of your first school?</option>
+                  </select>
+                  <input
+                    type="text"
+                    name="securityAnswer"
+                    placeholder="Your Answer"
+                    value={formData.securityAnswer}
+                    onChange={handleChange}
+                    required
+                  />
+                </>
+              )}
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              type="submit"
-              className="form-button"
+              {formType === 'login' && (
+                <p className="forgot-password">
+                  <span onClick={() => switchForm('forgot')}>Forgot Password?</span>
+                </p>
+              )}
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                type="submit"
+                className="form-button"
+                disabled={loading}
+              >
+                {loading ? 'Processing...' : formType === 'login' ? 'Login' : 'Register'}
+              </motion.button>
+            </motion.form>
+          ) : (
+            <motion.form
+              key="forgot"
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -100, opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="form-fields"
+              onSubmit={handleForgotSubmit}
             >
-              {formType === 'login' && 'Login'}
-              {formType === 'register' && 'Register'}
-              {formType === 'forgot' && 'Send Reset Link'}
-            </motion.button>
-          </motion.form>
+              {forgotStep === 1 && (
+                <>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your registered email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    type="submit"
+                    className="form-button"
+                    disabled={loading}
+                  >
+                    Next
+                  </motion.button>
+                </>
+              )}
+
+              {forgotStep === 2 && (
+                <>
+                  <select
+                    value={securityQuestion}
+                    onChange={(e) => setSecurityQuestion(e.target.value)}
+                    required
+                  >
+                    <option value="">Select Your Security Question</option>
+                    <option value="What is your pet's name?">What is your pet's name?</option>
+                    <option value="What is your mother's name?">What is your mother's name?</option>
+                    <option value="What was the name of your first school?">What was the name of your first school?</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Your Answer"
+                    value={securityAnswer}
+                    onChange={(e) => setSecurityAnswer(e.target.value)}
+                    required
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    type="submit"
+                    className="form-button"
+                    disabled={loading}
+                  >
+                    Verify Answer
+                  </motion.button>
+                </>
+              )}
+
+              {forgotStep === 3 && (
+                <>
+                  <input
+                    type="password"
+                    placeholder="Enter New Password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    type="submit"
+                    className="form-button"
+                    disabled={loading}
+                  >
+                    Set New Password
+                  </motion.button>
+                </>
+              )}
+            </motion.form>
+          )}
         </AnimatePresence>
 
         {message && (
@@ -179,9 +334,7 @@ const LoginModal = ({ show, onClose }) => {
           )}
         </p>
 
-        <p className="toggle-text" onClick={onClose}>
-          Close
-        </p>
+        <p className="toggle-text" onClick={onClose}>Close</p>
       </motion.div>
     </div>
   );

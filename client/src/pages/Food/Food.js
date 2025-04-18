@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import FoodCard from '../../components/food/FoodCard';
 import FoodForm from '../../components/food/FoodForm';
-import Button from '../../components/button'; // Adjust the path if needed
+import Button from '../../components/button';
 
 import { Search, PlusCircle, UtensilsCrossed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -21,8 +21,10 @@ const App = () => {
   const fetchFoods = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/foods');
+      const res = await axios.get('http://localhost:5000/api/foods');
       setFoods(res.data);
+    } catch (err) {
+      console.error("Fetch error:", err.message);
     } finally {
       setLoading(false);
     }
@@ -32,24 +34,9 @@ const App = () => {
     fetchFoods();
   }, []);
 
-  const handleAddOrUpdateFood = async (foodData) => {
-    try {
-      if (foodData._id) {
-        await axios.put(`http://localhost:5000/foods/${foodData._id}`, foodData);
-      } else {
-        await axios.post('http://localhost:5000/foods', foodData);
-      }
-      fetchFoods();
-      setShowForm(false);
-      setEditingFood(null);
-    } catch (err) {
-      console.error('Save error:', err.message);
-    }
-  };
-
   const handleDeleteFood = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/foods/${id}`);
+      await axios.delete(`http://localhost:5000/api/foods/${id}`);
       fetchFoods();
     } catch (err) {
       console.error('Delete error:', err.message);
@@ -105,21 +92,21 @@ const App = () => {
               <option value="Beverage">Beverage</option>
             </select>
 
-            <select value={vegFilter} className="DROPDOWN"onChange={(e) => setVegFilter(e.target.value)}>
+            <select value={vegFilter} className="DROPDOWN" onChange={(e) => setVegFilter(e.target.value)}>
               <option value="All">All</option>
               <option value="Veg">Veg</option>
               <option value="Non-Veg">Non-Veg</option>
             </select>
 
             <Button
-            onClick={() => {
-              setEditingFood(null);
-              setShowForm(true);
-            }}
-            className="add-button"
-          >
-            Add Food
-          </Button>
+              onClick={() => {
+                setEditingFood(null);
+                setShowForm(true);
+              }}
+              className="add-button"
+            >
+              Add Food
+            </Button>
 
           </div>
         </div>

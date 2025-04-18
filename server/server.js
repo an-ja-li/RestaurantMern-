@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 // Middleware
-app.use(cors());
+app.use(cors()); // Allow frontend access
 app.use(express.json());
 
 // Serve static files (uploads)
@@ -26,8 +26,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API Routes
 app.use("/api/staff", staffRoutes);
-app.use("/api/foods", foodRoutes);        // changed to "/api/foods" for consistency
-app.use("/api/auth", authRoutes);
+app.use("/api/foods", foodRoutes); // consistent naming
+app.use("/api/auth", authRoutes); // Auth routes for login/register/reset
 
 // Root route (optional)
 app.get("/", (req, res) => {

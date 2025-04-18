@@ -1,14 +1,14 @@
+// src/pages/Order.jsx
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import Button from '../../components/button'; // Adjust the path if needed
+import Button from '../../components/button';
 import { Search, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faBox } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import '../Food/Food.css';
-import'../Order/Order.css';
-
+import '../Order/Order.css';
 
 const App = () => {
   const [foods, setFoods] = useState([]);
@@ -17,7 +17,6 @@ const App = () => {
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [vegFilter, setVegFilter] = useState('All');
 
-  // Cart related
   const [cart, setCart] = useState([]);
   const [toastMsg, setToastMsg] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -26,8 +25,10 @@ const App = () => {
   const fetchFoods = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/foods');
+      const res = await axios.get('http://localhost:5000/api/foods');
       setFoods(res.data);
+    } catch (err) {
+      console.error('Failed to fetch foods:', err.message);
     } finally {
       setLoading(false);
     }
@@ -92,34 +93,29 @@ const App = () => {
 
   const handleCheckout = () => {
     showToast(`Your order of ₹${getTotal()} has been placed successfully!`);
-    
     const orderData = {
       cartItems: cart,
       totalAmount: getTotal(),
     };
-
     setCart([]);
-    navigate('/billing', { state: { order: orderData } });  
+    navigate('/billing', { state: { order: orderData } });
   };
+
   const navigate = useNavigate();
 
   const filteredFoods = useMemo(() => {
     let filtered = [...foods];
-
     if (searchTerm.trim()) {
       filtered = filtered.filter(food =>
         food.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
     if (categoryFilter !== 'All') {
       filtered = filtered.filter(food => food.category === categoryFilter);
     }
-
     if (vegFilter !== 'All') {
       filtered = filtered.filter(food => food.type === vegFilter);
     }
-
     return filtered;
   }, [foods, searchTerm, categoryFilter, vegFilter]);
 
@@ -172,35 +168,35 @@ const App = () => {
         </div>
 
         {loading ? (
-  <div className="loading-container">
-    <div className="loading-spinner"></div>
-  </div>
-) : (
-  <div className="food-grid">
-    {filteredFoods.map(food => (
-      <div key={food._id} className="food-card">
-        <img src={food.imageUrl} alt={food.name} className="food-image" />
-        <h3 className="food-name">{food.name}</h3>
-        <p className="food-price">₹{Number(food.price).toFixed(2)}</p>
-       
-        <button
-          className=" cart-button"
-          onClick={(e) => {
-            const btn = e.currentTarget;
-            btn.classList.add('clicked');
-            addToCart(food);
-            setTimeout(() => btn.classList.remove('clicked'), 1500);
-          }}
-        >
-          <span className="add-to-cart">Add to cart</span>
-          <span className="added">Added</span>
-          <FontAwesomeIcon icon={faShoppingCart} className="fa-shopping-cart" />
-          <FontAwesomeIcon icon={faBox} className="fa-box" />
-        </button>
-      </div>
-    ))}
-  </div>
-)}
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+          </div>
+        ) : (
+          <div className="food-grid">
+            {filteredFoods.map(food => (
+              <div key={food._id} className="food-card">
+                <img src={food.imageUrl} alt={food.name} className="food-image" />
+                <h3 className="food-name">{food.name}</h3>
+                <p className="food-price">₹{Number(food.price).toFixed(2)}</p>
+
+                <button
+                  className="cart-button"
+                  onClick={(e) => {
+                    const btn = e.currentTarget;
+                    btn.classList.add('clicked');
+                    addToCart(food);
+                    setTimeout(() => btn.classList.remove('clicked'), 1500);
+                  }}
+                >
+                  <span className="add-to-cart">Add to cart</span>
+                  <span className="added">Added</span>
+                  <FontAwesomeIcon icon={faShoppingCart} className="fa-shopping-cart" />
+                  <FontAwesomeIcon icon={faBox} className="fa-box" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
         <AnimatePresence>
           {isCartOpen && (
@@ -224,10 +220,7 @@ const App = () => {
             >
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h4 className="fw-bold">Your Cart</h4>
-                <button
-                  className="btn btn-close"
-                  onClick={() => setIsCartOpen(false)}
-                />
+                <button className="btn btn-close" onClick={() => setIsCartOpen(false)} />
               </div>
 
               {cart.length === 0 ? (
@@ -237,16 +230,11 @@ const App = () => {
                   <ul className="list-group mb-3">
                     {cart.map(item => (
                       <li key={item._id} className="list-group-item d-flex align-items-center">
-                        <img
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="me-3 rounded"
-                          style={{ width: '60px', height: '60px', objectFit: 'cover' }}
-                        />
+                        <img src={item.imageUrl} alt={item.name} className="me-3 rounded" style={{ width: '60px', height: '60px', objectFit: 'cover' }} />
                         <div className="flex-grow-1">
                           <div className="fw-bold">{item.name}</div>
                           <div className="d-flex align-items-center justify-content-between mt-1">
-                            <span className=" price-cart">₹{(item.price * item.quantity).toFixed(2)}</span>
+                            <span className="price-cart">₹{(item.price * item.quantity).toFixed(2)}</span>
                             <div>
                               <button className="btn btn-sm btn-outline-dark me-1 fw-bold" onClick={() => removeFromCart(item._id)}>-</button>
                               <span className="quantity">{item.quantity}</span>
@@ -263,9 +251,7 @@ const App = () => {
                       <span className="fw-bold">Total:</span>
                       <span className="fw-bold">₹{getTotal()}</span>
                     </div>
-                    <button className="checkout" onClick={handleCheckout}>
-                      Checkout
-                    </button>
+                    <button className="checkout" onClick={handleCheckout}>Checkout</button>
                   </div>
                 </>
               )}
