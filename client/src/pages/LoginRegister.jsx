@@ -1,7 +1,7 @@
-// components/LoginRegister.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import confetti from 'canvas-confetti'; // 🎉 Import confetti
 import './LoginRegister.css';
 
 const LoginModal = ({ show, onClose }) => {
@@ -22,7 +22,20 @@ const LoginModal = ({ show, onClose }) => {
   const [securityAnswer, setSecurityAnswer] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
+  const [showSnap, setShowSnap] = useState(false); // Add state for finger-snap animation
+
   if (!show) return null;
+
+  const launchConfetti = () => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+
+    setShowSnap(true); // Trigger snap animation
+    setTimeout(() => setShowSnap(false), 500); // Hide the snap animation after it runs
+  };
 
   const switchForm = (type) => {
     setFormType(type);
@@ -67,6 +80,10 @@ const LoginModal = ({ show, onClose }) => {
         });
         setMessage(res.data.message);
         setIsError(false);
+
+        // 🎉 Confetti on success
+        launchConfetti();
+
         setTimeout(() => {
           onClose();
           switchForm('login');
@@ -101,8 +118,13 @@ const LoginModal = ({ show, onClose }) => {
           securityAnswer: formData.securityAnswer,
         });
       }
+
       setMessage(res.data.message);
       setIsError(false);
+
+      // 🎉 Confetti on success
+      launchConfetti();
+
       setTimeout(() => {
         onClose();
         switchForm('login');
@@ -144,16 +166,14 @@ const LoginModal = ({ show, onClose }) => {
               onSubmit={handleSubmit}
             >
               {formType === 'register' && (
-                <>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Full Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Full Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
               )}
 
               <input
@@ -305,6 +325,19 @@ const LoginModal = ({ show, onClose }) => {
           <p className="form-message" style={{ color: isError ? 'red' : 'green' }}>
             {message}
           </p>
+        )}
+
+        {/* Finger-snap animation */}
+        {showSnap && (
+          <motion.div
+            className="finger-snap"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            👌
+          </motion.div>
         )}
 
         <p className="toggle-text">

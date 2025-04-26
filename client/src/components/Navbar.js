@@ -21,7 +21,7 @@ const CustomNavbar = () => {
               <Nav.Link as={Link} to="/staff">Staff</Nav.Link>
               <Nav.Link as={Link} to="/Food">Food & Drink</Nav.Link>
               <Nav.Link as={Link} to="/Order">Order</Nav.Link>
-              {/* <Nav.Link as={Link} to="/bills">Bills</Nav.Link> */}
+              <Nav.Link as={Link} to="/Billing">Bills</Nav.Link>
             </Nav>
           </Navbar.Collapse>
           <button className="blob-btn" onClick={() => setShowLoginModal(true)}>

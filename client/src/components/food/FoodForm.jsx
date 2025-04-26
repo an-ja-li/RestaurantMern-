@@ -20,10 +20,11 @@ const FoodForm = ({ onSuccess, editingFood, onClose }) => {
         category: editingFood.category || 'Starter',
         type: editingFood.type || 'Veg',
         image: null,
-        imageUrl: editingFood.imageUrl || ''
+        imageUrl: editingFood.imageUrl ? `http://localhost:5000/${editingFood.imageUrl}` : ''
       });
     }
   }, [editingFood]);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,8 +32,17 @@ const FoodForm = ({ onSuccess, editingFood, onClose }) => {
   };
 
   const handleImageChange = (e) => {
-    setFormData(prev => ({ ...prev, image: e.target.files[0] }));
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        image: file,
+        imageUrl: URL.createObjectURL(file)  // instant preview for upload
+      }));
+    }
   };
+  
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,12 +96,11 @@ const FoodForm = ({ onSuccess, editingFood, onClose }) => {
 
           <input type="file" accept="image/*" onChange={handleImageChange} />
 
-          {formData.imageUrl && !formData.image && (
-            <div>
-              <p>Current Image:</p>
-              <img src={formData.imageUrl} alt={formData.name} style={{ maxWidth: '100px' }} />
-            </div>
-          )}
+          {formData.imageUrl && (
+          <div className="image-preview-container">
+            <img src={formData.imageUrl} alt={formData.name} />
+          </div>
+        )}
 
           <div className="row">
             <button type="button" onClick={onClose}>Cancel</button>

@@ -10,6 +10,9 @@ const connectDB = require("./config/db");
 const staffRoutes = require("./routes/staffRoutes");
 const foodRoutes = require("./routes/foodRoutes");
 const authRoutes = require("./routes/authRoutes");
+const billRoutes = require('./routes/billRoutes');  // Adjust path
+
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,6 +24,8 @@ connectDB();
 app.use(cors()); // Allow frontend access
 app.use(express.json());
 
+
+
 // Serve static files (uploads)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -28,8 +33,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/api/staff", staffRoutes);
 app.use("/api/foods", foodRoutes); // consistent naming
 app.use("/api/auth", authRoutes); // Auth routes for login/register/reset
+app.use('/api/bills', billRoutes);
 
-// Root route (optional)
+
+
+// Root route (optional)cl
 app.get("/", (req, res) => {
   res.send("🍽️ Welcome to the Restaurant API");
 });

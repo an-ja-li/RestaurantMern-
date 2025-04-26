@@ -1,0 +1,247 @@
+/* Billing.css */
+
+.billing-container {
+  padding: 20px;
+  align-items: center;
+}
+
+.billing-title {
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+  
+  
+}
+
+.search-input-container {
+  width: 695px;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border-radius: 8px;
+  padding: 8px 12px;
+
+}
+
+.search-controls {
+ 
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-input-wrapper {
+  position: relative;
+  
+}
+
+.search-icon {
+
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.search-input{
+  padding: 8px 8px 8px 30px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+.date-input{
+  padding: 8px 8px 8px 30px;
+  width: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+
+/* table css */
+
+
+.table-container {
+  overflow-x: auto;
+  align-items: center;
+ 
+}
+
+.billing-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border: 2px solid #6c757d; /* Added thicker orange border */
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 16px; /* Increased font size */
+}
+
+.billing-table th,
+.billing-table td {
+  padding: 14px 18px; /* slightly more padding */
+  text-align: center;
+  vertical-align: middle;
+
+  border-bottom: 1px solid #eee;
+  font-weight: 500; /* slightly bold text */
+}
+
+.billing-table th {
+  background-color: #fafafa;
+  font-weight: 600; /* even bolder headers */
+  font-size: 17px; /* slightly bigger headers */
+}
+
+.billing-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Button styles */
+.download-button,
+.delete-button {
+  padding: 8px 16px;
+  margin: 4px;
+  font-size: 14px;
+  border: 2px solid #f27b42;
+  border-radius: 20px;
+  background-color: transparent;
+  color: #f27b42;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.download-button:hover,
+.delete-button:hover {
+  background-color: #f27b42;
+  color: white;
+}
+
+
+/* .search-bar {
+  margin-bottom: 20px;
+  
+}
+
+.search-input-container {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  margin-left: 8px;
+  font-size: 16px;
+}
+
+
+.search-container select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.search-container select:focus {
+  outline:black;
+  border-color:black;
+}
+
+
+
+.billing-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.billing-filters input[type="text"],
+.billing-filters input[type="date"] {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.billing-filters button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pdf-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.pdf-modal {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 900px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: crimson;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+}
+table{
+  text-align: center;
+
+}
+
+th{
+  border:1px solid #ddd;
+  padding: 8px;
+  background-Color: #f2f2f2;
+  font-Weight: bold;
+}
+tr{
+  border-bottom:1px soild #ccc ;
+}
+
+button{
+  padding: 8px 12px ;
+  background-Color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-Radius: 4px;
+}
+
+.del-button{
+  background-Color: red;
+  color: white;
+  margin-left: 1%;
+} */

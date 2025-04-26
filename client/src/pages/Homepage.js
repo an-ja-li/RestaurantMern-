@@ -12,7 +12,7 @@ const Homepage = () => {
         rel="stylesheet"
       />
 
-      <div className="container d-flex align-items-center justify-content-between py-5">
+      <div className="container d-flex align-items-center justify-content-between py-5 ">
         <div className="text-left">
           <h1 className="title">Wait a minute for delicious.</h1>
           <Button>Discover Menu</Button>
