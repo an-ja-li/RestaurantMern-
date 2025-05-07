@@ -1,44 +1,63 @@
-.menu-container {
-    max-width: 1200px;
-    margin: auto;
-    background-color: #fdfaf5 !important; /* Add !important */
-    font-family: "Pacifico", cursive;
-    padding: 40px;
-    border-radius: 10px;
-  }
-  
-  
-  .title {
-    color: #28a745;
-    font-weight: bold;
-    font-family: "Pacifico", cursive;
+.restaurant-home {
+  background: linear-gradient(135deg, #fdfaf5 30%, #f4e1d2 100%);
+  padding: 0 5%;
+  margin-top: 0%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100vh;
+  flex-wrap: wrap; /* Responsive layout */
+}
+
+.container {
+  flex: 1;
+  min-width: 300px;
+  z-index: 1;
+}
+
+.welcome-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #2c2c2c;
+  text-transform: uppercase;
+}
+
+.instruction {
+  font-size: 1.25rem;
+  color: #6c6c6c;
+}
+
+.big-order-btn {
+  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.big-order-btn:hover {
+  background-color: #f44336;
+  transform: scale(1.05);
+}
+
+.burger-image-container {
+  max-width: 450px; /* Increased width to ensure better proportion */
+}
+
+.burger-display {
+  width: 100%;
+  height: auto; /* Maintains aspect ratio */
+  border-radius: 12px; /* Rounded corners for a softer look */
+  margin-top: 0;
 
 
-  }
-  
-  .headline {
-    font-weight: bold;
-    font-size: 2.5rem;
-  }
-  
-  .description {
-    color: #6c757d;
-  }
-  
-  .price {
-    margin-top: 10px;
-    font-weight: bold;
-  }
-  
-  .price span {
-    color: #000;
-  }
-  
-  .food-image {
-    width: 350px;
-    height: 350px;
-    object-fit: cover;
-    border-radius: 50%;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  }
+  transition: transform 0.3s ease;
+}
+
+.burger-display:hover {
+  transform: scale(1.05);
  
+}

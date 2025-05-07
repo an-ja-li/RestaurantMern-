@@ -101,7 +101,7 @@
 }
 
 /* Button styles */
-.download-button,
+.print-button,
 .delete-button {
   padding: 8px 16px;
   margin: 4px;
@@ -114,7 +114,7 @@
   transition: all 0.3s ease;
 }
 
-.download-button:hover,
+.print-button:hover,
 .delete-button:hover {
   background-color: #f27b42;
   color: white;

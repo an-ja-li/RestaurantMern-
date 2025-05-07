@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
+// Billing.js
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Search, Trash2, Download } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { jsPDF } from 'jspdf';
-import "./Billing.css";
+import PrintableBill from './PrintableBill';
+import './Billing.css';
 
 const Billing = () => {
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+  const [printBill, setPrintBill] = useState(null);
+  const printRef = useRef();
 
   useEffect(() => {
     fetchBills();
@@ -27,28 +31,19 @@ const Billing = () => {
   };
 
   const deleteBill = async (billId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this bill?');
-    if (!confirmDelete) return;
-  
+    if (!window.confirm('Are you sure you want to delete this bill?')) return;
     try {
-      const res = await axios.delete(`http://localhost:5000/api/bills/${billId}`);
-      console.log('Response:', res);
-      setBills((prevBills) => prevBills.filter((bill) => bill._id !== billId));
+      await axios.delete(`http://localhost:5000/api/bills/${billId}`);
+      setBills(prev => prev.filter(b => b._id !== billId));
       alert('Bill deleted successfully.');
-    } catch (error) {
-      console.error('Error deleting bill:', error);
-      alert('Failed to delete bill. Please try again.');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete bill.');
     }
   };
-  
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleDateChange = (e) => {
-    setSelectedDate(e.target.value);
-  };
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
+  const handleDateChange = (e) => setSelectedDate(e.target.value);
 
   const generatePDF = (bill) => {
     const doc = new jsPDF();
@@ -65,6 +60,18 @@ const Billing = () => {
     doc.save(`Bill_${bill._id}.pdf`);
   };
 
+  const handlePrint = (bill) => {
+    setPrintBill(bill);
+    setTimeout(() => {
+      const printContents = printRef.current.innerHTML;
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.location.reload();
+    }, 100);
+  };
+
   const filteredBills = bills.filter((bill) => {
     const billDate = new Date(bill.createdAt).toISOString().slice(0, 10);
     const matchesSearch = bill.customer?.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -76,10 +83,8 @@ const Billing = () => {
     <div className="billing-container">
       <h2 className="billing-title">🧾 All Bills</h2>
 
-      {/* Search and Filter */}
       <div className="search-bar">
         <div className="search-controls">
-          {/* Search Input */}
           <div className="search-input-wrapper">
             <Search className="search-icon" size={18} />
             <input
@@ -91,7 +96,6 @@ const Billing = () => {
             />
           </div>
 
-          {/* Date Input */}
           <div className="search-input-wrapper">
             <input
               type="date"
@@ -109,50 +113,55 @@ const Billing = () => {
         <p>No bills found.</p>
       ) : (
         <div className="table-container">
-         <table className="billing-table">
-  <thead>
-    <tr>
-      <th>No.</th>
-      <th>Customer</th>
-      <th>Contact</th>
-      <th>Items</th>
-      <th>Total (₹)</th>
-      <th>Payment</th>
-      <th>Date</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    {filteredBills.map((bill, index) => (
-      <tr key={bill._id}>
-        <td>{index + 1}</td>
-        <td>{bill.customer?.name}</td>
-        <td>{bill.customer?.contact}</td>
-        <td>
-          {bill.items.map((item, idx) => (
-            <div key={idx}>
-              {item.name} x{item.quantity}
-            </div>
-          ))}
-        </td>
-        <td>₹{bill.totalAmount}</td>
-        <td>{bill.paymentMethod}</td>
-        <td>{new Date(bill.createdAt).toLocaleString()}</td>
-        <td>
-          <button className="download-button" onClick={() => generatePDF(bill)}>
-            Download
-          </button>
-          <button className="delete-button" onClick={() => deleteBill(bill._id)}>
-            Delete
-          </button>
+          <table className="billing-table">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th>Items</th>
+                <th>Total (₹)</th>
+                <th>Payment</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredBills.map((bill, index) => (
+                <tr key={bill._id}>
+                  <td>{index + 1}</td>
+                  <td>{bill.customer?.name}</td>
+                  <td>{bill.customer?.contact}</td>
+                  <td>
+                    {bill.items.map((item, idx) => (
+                      <div key={idx}>{item.name} x{item.quantity}</div>
+                    ))}
+                  </td>
+                  <td>₹{bill.totalAmount}</td>
+                  <td>{bill.paymentMethod}</td>
+                  <td>{new Date(bill.createdAt).toLocaleString()}</td>
+                  <td>
+                  <button className="print-button" onClick={() => handlePrint(bill)}>
+                      Print
+                    </button>
+                    <button className="delete-button" onClick={() => deleteBill(bill._id)}>
+                      Delete
+                    </button>
+                   
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-         
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+      {/* Hidden Printable Area */}
+      {printBill && (
+        <div style={{ display: 'none' }}>
+          <div ref={printRef}>
+            <PrintableBill bill={printBill} />
+          </div>
         </div>
       )}
     </div>
@@ -160,9 +169,3 @@ const Billing = () => {
 };
 
 export default Billing;
-
-
-
-
-
-

@@ -1,31 +1,27 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Homepage.css"; // Import CSS for additional styling
-import Button from "../components/button"; // Custom Button component
+import "./Homepage.css";
+import Button from "../components/button";
 
 const Homepage = () => {
   return (
-    <>
-      {/* Import Google Font for cursive style */}
-      <link
-        href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
-        rel="stylesheet"
+    <section className="restaurant-home d-flex align-items-center justify-content-between min-vh-100">
+      <div className="container text-center py-5">
+        <h1 className="welcome-text mb-4">Welcome to Food O'clock</h1>
+        <p className="instruction mb-4">Tap below to start your order</p>
+        <Button className="big-order-btn">Start Ordering</Button>
+      </div>
+
+      <div className="burger-image-container">
+       
+      <img
+           src="/Homepage image.png"
+        alt="Burger"
+        className="img-fluid burger-display"
       />
 
-      <div className="container d-flex align-items-center justify-content-between py-5 ">
-        <div className="text-left">
-          <h1 className="title">Wait a minute for delicious.</h1>
-          <Button>Discover Menu</Button>
-        </div>
-        <div>
-          <img
-            src="https://previews.123rf.com/images/smit/smit0810/smit081000273/3745441-round-pizza-isolated-on-white-background.jpg"
-            alt="Briko Salad"
-            className="img-fluid rounded-circle food-image"
-          />
-        </div>
       </div>
-    </>
+    </section>
   );
 };
 
