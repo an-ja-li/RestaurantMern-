@@ -183,6 +183,7 @@
 .search-bar {
   margin-bottom: 20px;
   position: relative;
+  
 }
 
 .search-input-container {
@@ -191,14 +192,15 @@
   align-items: center;
   background: transparent;
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 10px 12px;
   position: relative; 
+  
 
 }
 .search-icon{
   margin-right: 10px; /* Space between icon and input */
   position: absolute;
-  right: 15px;
+  margin-left: 15px;
 }
 
 .search-input {

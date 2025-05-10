@@ -21,7 +21,7 @@ const App = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('Cash on Delivery');
-  const [userInfo, setUserInfo] = useState({ name: '', contact: '', address: '' });
+  const [userInfo, setUserInfo] = useState({ name: '', contact: '' });
   const MAX_QUANTITY = 10;
 
   const navigate = useNavigate();
@@ -74,7 +74,14 @@ const App = () => {
 
   const handlePayment = async (e) => {
     e.preventDefault();
-  
+
+    // Phone number validation (for a 10-digit number)
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(userInfo.contact)) {
+      setToastMsg('Please enter a valid 10-digit phone number.');
+      return;
+    }
+
     const orderData = {
       cartItems: cart.map(item => ({
         name: item.name,
@@ -85,7 +92,7 @@ const App = () => {
       userInfo,
       paymentMethod
     };
-  
+
     try {
       const response = await axios.post('http://localhost:5000/api/bills/createBill', orderData);
       console.log('Bill created:', response.data);
@@ -99,10 +106,7 @@ const App = () => {
       setToastMsg('Failed to create bill');
     }
   };
-  
-  
-  
-  
+
   const filteredFoods = useMemo(() => {
     return foods.filter(food => {
       return (
@@ -255,47 +259,51 @@ const App = () => {
 
         {/* Payment Modal */}
         {showPaymentModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>Complete Your Order</h2>
-            <form onSubmit={handlePayment}>
-              <input
-                type="text"
-                placeholder="Name"
-                value={userInfo.name}
-                onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Contact"
-                value={userInfo.contact}
-                onChange={(e) => setUserInfo({ ...userInfo, contact: e.target.value })}
-                required
-              />
-              <select
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                required
-              >
-                <option value="Cash">Cash</option>
-                <option value="UPI">UPI</option>
-              </select>
-              <div className="button-group">
-              <button type="submit">Confirm Payment</button>
-              <button type="button" onClick={() => setShowPaymentModal(false)}>Cancel</button>
-              </div>
-            </form>
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>Complete Your Order</h2>
+              <form onSubmit={handlePayment}>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={userInfo.name}
+                  onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Contact"
+                  value={userInfo.contact}
+                  onChange={(e) => setUserInfo({ ...userInfo, contact: e.target.value })}
+                  required
+                  pattern="^[0-9]{10}$"
+                  title="Please enter a valid 10-digit phone number"
+                />
+                <select
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  required
+                >
+                  <option value="">select payment option </option>
+                  <option value="Cash">Cash</option>
+                  <option value="UPI">UPI</option>
+                </select>
+                <div className="button-group">
+                  <button type="submit">Confirm Payment</button>
+                  <button type="button" onClick={() => setShowPaymentModal(false)}>Cancel</button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
-       {/* Toast Message */}
-       {toastMsg && (
-        <div className="toast">
-          {toastMsg}
-          <button onClick={() => setToastMsg('')}>X</button>
-        </div>
-      )}
+        )}
+
+        {/* Toast Message */}
+        {toastMsg && (
+          <div className="toast">
+            {toastMsg}
+            <button onClick={() => setToastMsg('')}>X</button>
+          </div>
+        )}
       </div>
     </div>
   );
